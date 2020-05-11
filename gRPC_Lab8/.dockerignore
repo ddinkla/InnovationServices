@@ -1,0 +1,4 @@
+.git
+.gitignore
+.inventory_services_client
+.Dockerfile*
