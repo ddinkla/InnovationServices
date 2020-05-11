@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='ordermgt',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x17inventory_service.proto\x12\x08ordermgt\"\x1b\n\x0bProductType\x12\x0c\n\x04type\x18\x01 \x01(\t\"*\n\x08Quantity\x12\x0e\n\x06\x61mount\x18\x01 \x01(\t\x12\x0e\n\x06metric\x18\x02 \x01(\t\"\x97\x01\n\x0cStockSummary\x12>\n\x0cproductStock\x18\x01 \x03(\x0b\x32(.ordermgt.StockSummary.ProductStockEntry\x1aG\n\x11ProductStockEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.ordermgt.Quantity:\x02\x38\x01\x32\x9b\x01\n\x10InventoryService\x12\x41\n\x12GetProductQuantity\x12\x15.ordermgt.ProductType\x1a\x12.ordermgt.Quantity\"\x00\x12\x44\n\x0fGetStockSummary\x12\x15.ordermgt.ProductType\x1a\x16.ordermgt.StockSummary\"\x00(\x01\x62\x06proto3'
+  serialized_pb=b'\n\x17inventory_service.proto\x12\x08ordermgt\"\x1b\n\x0bProductType\x12\x0c\n\x04type\x18\x01 \x01(\t\"*\n\x08Quantity\x12\x0e\n\x06\x61mount\x18\x01 \x01(\x05\x12\x0e\n\x06metric\x18\x02 \x01(\t\"\x9a\x01\n\x0cStockSummary\x12@\n\rproductStocks\x18\x01 \x03(\x0b\x32).ordermgt.StockSummary.ProductStocksEntry\x1aH\n\x12ProductStocksEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.ordermgt.Quantity:\x02\x38\x01\x32\x9b\x01\n\x10InventoryService\x12\x41\n\x12GetProductQuantity\x12\x15.ordermgt.ProductType\x1a\x12.ordermgt.Quantity\"\x00\x12\x44\n\x0fGetStockSummary\x12\x15.ordermgt.ProductType\x1a\x16.ordermgt.StockSummary\"\x00(\x01\x62\x06proto3'
 )
 
 
@@ -64,8 +64,8 @@ _QUANTITY = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='amount', full_name='ordermgt.Quantity.amount', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -93,22 +93,22 @@ _QUANTITY = _descriptor.Descriptor(
 )
 
 
-_STOCKSUMMARY_PRODUCTSTOCKENTRY = _descriptor.Descriptor(
-  name='ProductStockEntry',
-  full_name='ordermgt.StockSummary.ProductStockEntry',
+_STOCKSUMMARY_PRODUCTSTOCKSENTRY = _descriptor.Descriptor(
+  name='ProductStocksEntry',
+  full_name='ordermgt.StockSummary.ProductStocksEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='ordermgt.StockSummary.ProductStockEntry.key', index=0,
+      name='key', full_name='ordermgt.StockSummary.ProductStocksEntry.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='value', full_name='ordermgt.StockSummary.ProductStockEntry.value', index=1,
+      name='value', full_name='ordermgt.StockSummary.ProductStocksEntry.value', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -126,8 +126,8 @@ _STOCKSUMMARY_PRODUCTSTOCKENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=191,
-  serialized_end=262,
+  serialized_start=193,
+  serialized_end=265,
 )
 
 _STOCKSUMMARY = _descriptor.Descriptor(
@@ -138,7 +138,7 @@ _STOCKSUMMARY = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='productStock', full_name='ordermgt.StockSummary.productStock', index=0,
+      name='productStocks', full_name='ordermgt.StockSummary.productStocks', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -147,7 +147,7 @@ _STOCKSUMMARY = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_STOCKSUMMARY_PRODUCTSTOCKENTRY, ],
+  nested_types=[_STOCKSUMMARY_PRODUCTSTOCKSENTRY, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -157,12 +157,12 @@ _STOCKSUMMARY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=111,
-  serialized_end=262,
+  serialized_end=265,
 )
 
-_STOCKSUMMARY_PRODUCTSTOCKENTRY.fields_by_name['value'].message_type = _QUANTITY
-_STOCKSUMMARY_PRODUCTSTOCKENTRY.containing_type = _STOCKSUMMARY
-_STOCKSUMMARY.fields_by_name['productStock'].message_type = _STOCKSUMMARY_PRODUCTSTOCKENTRY
+_STOCKSUMMARY_PRODUCTSTOCKSENTRY.fields_by_name['value'].message_type = _QUANTITY
+_STOCKSUMMARY_PRODUCTSTOCKSENTRY.containing_type = _STOCKSUMMARY
+_STOCKSUMMARY.fields_by_name['productStocks'].message_type = _STOCKSUMMARY_PRODUCTSTOCKSENTRY
 DESCRIPTOR.message_types_by_name['ProductType'] = _PRODUCTTYPE
 DESCRIPTOR.message_types_by_name['Quantity'] = _QUANTITY
 DESCRIPTOR.message_types_by_name['StockSummary'] = _STOCKSUMMARY
@@ -184,10 +184,10 @@ _sym_db.RegisterMessage(Quantity)
 
 StockSummary = _reflection.GeneratedProtocolMessageType('StockSummary', (_message.Message,), {
 
-  'ProductStockEntry' : _reflection.GeneratedProtocolMessageType('ProductStockEntry', (_message.Message,), {
-    'DESCRIPTOR' : _STOCKSUMMARY_PRODUCTSTOCKENTRY,
+  'ProductStocksEntry' : _reflection.GeneratedProtocolMessageType('ProductStocksEntry', (_message.Message,), {
+    'DESCRIPTOR' : _STOCKSUMMARY_PRODUCTSTOCKSENTRY,
     '__module__' : 'inventory_service_pb2'
-    # @@protoc_insertion_point(class_scope:ordermgt.StockSummary.ProductStockEntry)
+    # @@protoc_insertion_point(class_scope:ordermgt.StockSummary.ProductStocksEntry)
     })
   ,
   'DESCRIPTOR' : _STOCKSUMMARY,
@@ -195,10 +195,10 @@ StockSummary = _reflection.GeneratedProtocolMessageType('StockSummary', (_messag
   # @@protoc_insertion_point(class_scope:ordermgt.StockSummary)
   })
 _sym_db.RegisterMessage(StockSummary)
-_sym_db.RegisterMessage(StockSummary.ProductStockEntry)
+_sym_db.RegisterMessage(StockSummary.ProductStocksEntry)
 
 
-_STOCKSUMMARY_PRODUCTSTOCKENTRY._options = None
+_STOCKSUMMARY_PRODUCTSTOCKSENTRY._options = None
 
 _INVENTORYSERVICE = _descriptor.ServiceDescriptor(
   name='InventoryService',
@@ -206,8 +206,8 @@ _INVENTORYSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=265,
-  serialized_end=420,
+  serialized_start=268,
+  serialized_end=423,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetProductQuantity',
