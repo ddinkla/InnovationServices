@@ -15,7 +15,7 @@ def generate_product_list():
 def run():
     # replace "localhost" with the external IP of the VM when the service is deployed in Google VM
     # get a http connection to the server
-    channel = grpc.insecure_channel('34.67.24.194:5005')
+    channel = grpc.insecure_channel('35.223.149.141:5005')
     stub = inventory_service_pb2_grpc.InventoryServiceStub(channel)
     response = stub.GetProductQuantity(inventory_service_pb2.ProductType(type="Laptop"))
     logging.info("Quantity for Product Type Laptop : " + str(response.amount))
