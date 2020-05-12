@@ -69,3 +69,9 @@ class TripRequests(Resource):
 
         trips.append(trip_to_be_created)
         return trip_to_be_created, 201  # 201 Created HTTP status code
+
+
+class TripsRequests(Resource):
+    def get(self):
+        for trip in trips:
+            return trip, 200
