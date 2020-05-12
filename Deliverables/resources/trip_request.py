@@ -5,19 +5,19 @@ from flask import request
 trips = [
     {
         "trip_id": "31353",
-        "customer_id": 'u314958',
+        "customer_id": "u314958",
         "location": [51.688273, 5.299361],
         "destination": [51.448750, 5.490747]  # Eindhoven University
     },
     {
         "trip_id": "14891",
-        "customer_id": 'u035135',
+        "customer_id": "u035135",
         "location": [51.688273, 5.299361],
         "destination": [51.563885, 5.043359]  # Tilburg University
     },
     {
         "trip_id": "15183",
-        "customer_id": 'u51351',
+        "customer_id": "u51351",
         "location": [51.688273, 5.299361],
         "destination": [52.312227, 4.779599]  # Schiphol Airport Coordinates
     }
