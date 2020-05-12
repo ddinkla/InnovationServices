@@ -44,20 +44,21 @@ class DriverRecord(Resource):
 
     def put(self, driver_id):
         parser = reqparse.RequestParser()
-        parser.add_argument("Status", type=str, help="Change driver status",
+        parser.add_argument("status", type=str, help="Change driver status",
                             choices=['available', 'driving', 'offline'])
         args = parser.parse_args(strict=True)
 
-        possible_status = ['available', 'driving', 'offline']
-        if args["Status"] not in possible_status:
-            return {"message": "Bad request, status not in status format (available, driving, offline)"}, 400
-        else:
-            for driver in drivers:
-                if driver_id == driver["driver_id"]:
-                    driver["status"] = args["Status"]
-                    return driver, 200
+        #possible_status = ['available', 'driving', 'offline']
+        #if args["Status"] not in possible_status:
+        #    return {"message": "Bad request, status not in status format (available, driving, offline)"}, 400
+        #else:
 
-            return {"message": "Trip not found"}, 404
+        for driver in drivers:
+            if driver_id == driver["driver_id"]:
+                driver["status"] = args["status"]
+                return driver, 200
+
+        return {"message": "Trip not found"}, 404
 
     def delete(self, driver_id):
         to_be_deleted = None
