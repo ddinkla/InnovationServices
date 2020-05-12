@@ -34,12 +34,14 @@ class TripRequest(Resource):
 
     def put(self, trip_id):
         parser = reqparse.RequestParser()
-        parser.add_argument("destination", type=list, help="Change destination array")
+        parser.add_argument("destination_lat", type=float, help="Change destination latitude")
+        parser.add_argument("destination_long", type=float, help="Change destination longitude")
         args = parser.parse_args(strict=True)
 
         for trip in trips:
             if trip_id == trip["trip_id"]:
-                trip["destination"] = args["destination"]
+                trip["destination"][0] = args["destination_lat"]
+                trip["destination"][1] = args["destination_long"]
                 return trip, 200
 
         return {"message": "Trip not found"}, 404

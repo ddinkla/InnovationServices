@@ -44,7 +44,8 @@ class DriverRecord(Resource):
 
     def put(self, driver_id):
         parser = reqparse.RequestParser()
-        parser.add_argument("Status", type=str, help="Change driver status")
+        parser.add_argument("Status", type=str, help="Change driver status",
+                            choices=['available', 'driving', 'offline'])
         args = parser.parse_args(strict=True)
 
         possible_status = ['available', 'driving', 'offline']
