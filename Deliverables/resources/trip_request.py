@@ -4,24 +4,23 @@ from flask import request
 # dummy data
 trips = [
     {
-        "trip_id": 31353,
+        "trip_id": "31353",
         "customer_id": 'u314958',
         "location": [51.688273, 5.299361],
         "destination": [51.448750, 5.490747]  # Eindhoven University
     },
-{
-        "trip_id": 14891,
+    {
+        "trip_id": "14891",
         "customer_id": 'u035135',
         "location": [51.688273, 5.299361],
         "destination": [51.563885, 5.043359]  # Tilburg University
     },
     {
-        "trip_id": 15183,
+        "trip_id": "15183",
         "customer_id": 'u51351',
         "location": [51.688273, 5.299361],
         "destination": [52.312227, 4.779599]  # Schiphol Airport Coordinates
     }
-
 ]
 
 
@@ -31,7 +30,7 @@ class TripRequest(Resource):
         for trip in trips:
             if trip_id == trip["trip_id"]:
                 return trip, 200  # return 200 HTTP status code to indicate success
-        return {"message": "Trip not found"}, 404 # return 404 HTTP status code to indicate resource not found
+        return {"message": "Trip not found"}, 404  # return 404 HTTP status code to indicate resource not found
 
     def put(self, trip_id):
         parser = reqparse.RequestParser()
