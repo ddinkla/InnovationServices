@@ -5,19 +5,19 @@ from flask import request
 trips = [
     {
         "trip_id": "31353",
-        "customer_id": 'u314958',
+        "customer_id": "u314958",
         "location": [51.688273, 5.299361],
         "destination": [51.448750, 5.490747]  # Eindhoven University
     },
     {
         "trip_id": "14891",
-        "customer_id": 'u035135',
+        "customer_id": "u035135",
         "location": [51.688273, 5.299361],
         "destination": [51.563885, 5.043359]  # Tilburg University
     },
     {
         "trip_id": "15183",
-        "customer_id": 'u51351',
+        "customer_id": "u51351",
         "location": [51.688273, 5.299361],
         "destination": [52.312227, 4.779599]  # Schiphol Airport Coordinates
     }
@@ -34,7 +34,7 @@ class TripRequest(Resource):
 
     def put(self, trip_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('destination', type=int, help='Change destination array')
+        parser.add_argument("destination", type=list, help="Change destination array")
         args = parser.parse_args(strict=True)
 
         for trip in trips:
@@ -57,11 +57,11 @@ class TripRequest(Resource):
         return {"message": "Trip not found"}, 404
 
 
-# resource collection place records
+# resource collection TripRequests
 class TripRequests(Resource):
     def post(self):
         trip_to_be_created = request.get_json(force=True)
-        trip_id = trip_to_be_created['trip_id']
+        trip_id = trip_to_be_created["trip_id"]
         for trip in trips:
             if trip_id == trip["trip_id"]:
                 # 500 Internal Server Error HTTP status code
