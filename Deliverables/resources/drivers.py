@@ -44,14 +44,14 @@ class DriverRecord(Resource):
 
     def put(self, driver_id):
         parser = reqparse.RequestParser()
-        parser.add_argument("status", type=str, help="Change driver status",
+        parser.add_argument("status", type=str, help="Status not valid, change driver status",
                             choices=['available', 'driving', 'offline'])
         args = parser.parse_args(strict=True)
 
-        #possible_status = ['available', 'driving', 'offline']
-        #if args["Status"] not in possible_status:
+        # possible_status = ['available', 'driving', 'offline']
+        # if args["Status"] not in possible_status:
         #    return {"message": "Bad request, status not in status format (available, driving, offline)"}, 400
-        #else:
+        # else:
 
         for driver in drivers:
             if driver_id == driver["driver_id"]:
@@ -90,4 +90,3 @@ class DriverRecords(Resource):
 class DriversRecords(Resource):
     def get(self):
             return drivers, 200
-
