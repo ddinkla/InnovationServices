@@ -73,5 +73,4 @@ class TripRequests(Resource):
 
 class TripsRequests(Resource):
     def get(self):
-        for trip in trips:
-            return trip, 200
+            return trips, 200
