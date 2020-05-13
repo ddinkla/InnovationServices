@@ -5,21 +5,24 @@ from flask import request
 trips = [
     {
         "trip_id": "31353",
+        "customer_name":"Beyonce",
         "customer_id": "u314958",
-        "location": [51.688273, 5.299361],
-        "destination": [51.448750, 5.490747]  # Eindhoven University
+        "location": "JADS, Den Bosch",
+        "destination": "Eindhoven University"
     },
     {
         "trip_id": "14891",
+        "customer_name": "Queen Maxima",
         "customer_id": "u035135",
-        "location": [51.688273, 5.299361],
-        "destination": [51.563885, 5.043359]  # Tilburg University
+        "location":  "JADS, Den Bosch",
+        "destination":  "Tilburg University"  # Tilburg University
     },
     {
         "trip_id": "15183",
+        "customer_name": "Michelle Obama",
         "customer_id": "u51351",
-        "location": [51.688273, 5.299361],
-        "destination": [52.312227, 4.779599]  # Schiphol Airport Coordinates
+        "location":  "JADS, Den Bosch",
+        "destination": "Schiphol Airport"  # Schiphol Airport Coordinates
     }
 ]
 
@@ -34,14 +37,12 @@ class TripRequest(Resource):
 
     def put(self, trip_id):
         parser = reqparse.RequestParser()
-        parser.add_argument("destination_lat", type=float, help="Change destination latitude")
-        parser.add_argument("destination_long", type=float, help="Change destination longitude")
+        parser.add_argument("destination", type=float, help="Change destination")
         args = parser.parse_args(strict=True)
 
         for trip in trips:
             if trip_id == trip["trip_id"]:
-                trip["destination"][0] = args["destination_lat"]
-                trip["destination"][1] = args["destination_long"]
+                trip["destination"] = args["destination"]
                 return trip, 200
 
         return {"message": "Trip not found"}, 404
