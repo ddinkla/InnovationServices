@@ -4,16 +4,8 @@ from flask import request
 # dummy data
 driver_locations = [
     {
-        "driver_id": "d12542",
-        "last_location": [51.680400, 5.293250],
-    },
-    {
         "driver_id": "d85719",
         "last_location": [51.676213, 5.289145],
-    },
-    {
-        "driver_id": "d54818",
-        "last_location": [51.64751, 5.310581],
     },
     {
         "driver_id": "d762057",

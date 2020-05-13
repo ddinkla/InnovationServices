@@ -24,7 +24,7 @@ drivers = [
     {
         "driver_id": "d762057",
         "name": "Max Verstappen",
-        "status": "driving",
+        "status": "available",
         "CarType": "premium"
     }
 ]
