@@ -5,15 +5,6 @@ import random
 best_driver = []
 
 
-class DriverLocation(Resource):
-    def get(self, driver_id):
-        for driver in driver_locations:
-            if driver_id == driver["driver_id"]:
-                return driver, 200  # return 200 HTTP status code to indicate success
-        return {"message": "Driver not found"}, 404  # return 404 HTTP status code to indicate resource not found
-
-
-
 class AvailableDrivers(Resource):
     def post(self):
         drivers = request.get_json(force=True)
