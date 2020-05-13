@@ -1,0 +1,51 @@
+######################## TRIP REQUEST SERVICE ###########################
+
+Get Trip Request
+http://{your_vm_ip}:5000/trip_requests/14891
+
+Put Trip Request (Update destination) build up as follows: vm_ip:port/access_trip_service/trip_id
+http://{your_vm_ip}:5000/trip_requests/31353?destination_lat=32.5901&destination_long=55.13541
+
+Delete Trip Request
+http://{your_vm_ip}:5000/trip_requests/14891
+
+Post new Trip Request
+http://{your_vm_ip}:5000/trip_requests/
+ 
+with JSON body:
+{
+        "trip_id": "382543",
+        "customer_id": "u362718",
+        "location": [51.688273, 5.299361],
+        "destination": [51.690639, 5.293362]
+}
+
+################### DRIVER SERVICE ##################################
+Get Driver
+http://{your_vm_ip}:5000/drivers/d12542
+
+Put Driver (update status)
+http://{your_vm_ip}:5000/drivers/d12542?status=offline
+
+Delete Driver
+http://{your_vm_ip}:5000/drivers/d12542
+
+Post new Driver
+http://{your_vm_ip}:5000/drivers
+
+with JSON body:
+
+    {
+        "driver_id": "d76280",
+        "name": "Sebastian Vettel",
+        "last_location": [54.65143, 7.17945],
+        "status": "offline",
+        "CarType": "basic"
+    }
+
+
+
+
+
+
+
