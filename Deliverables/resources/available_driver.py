@@ -11,14 +11,14 @@ class AvailableDrivers(Resource):
 
         if len(best_driver) != 0:
             return {"message": "Best driver not empty"}, 400
+        else:
+            available_drivers = []
+            for i in range(len(drivers)):
+                if drivers[i]['status'] == "available":
+                    available_drivers.append(drivers[i])
 
-        available_drivers = []
-        for i in range(len(drivers)):
-            if drivers[i]['status'] == "available":
-                available_drivers.append(drivers[i])
-
-        best_driver.append(random.choice(available_drivers))
-        return best_driver, 201  # 201 Created HTTP status code
+            best_driver.append(random.choice(available_drivers))
+            return best_driver, 201  # 201 Created HTTP status code
 
     def delete(self):
         best_driver = []
