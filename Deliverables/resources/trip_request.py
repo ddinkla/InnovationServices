@@ -37,7 +37,7 @@ class TripRequest(Resource):
 
     def put(self, trip_id):
         parser = reqparse.RequestParser()
-        parser.add_argument("destination", type=float, help="Change destination")
+        parser.add_argument("destination", type=str, help="Change destination")
         args = parser.parse_args(strict=True)
 
         for trip in trips:
