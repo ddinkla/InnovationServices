@@ -4,8 +4,7 @@ Get Trip Request
 http://{your_vm_ip}:5000/trip_requests/14891
 
 Put Trip Request (Update destination) build up as follows: vm_ip:port/access_trip_service/trip_id
-http://{your_vm_ip}:5000/trip_requests/31353?destination_lat=32.5901&destination_long=55.13541
-
+http://{your_vm_ip}:5000/trip_requests/31353?destination=some_string
 Delete Trip Request
 http://{your_vm_ip}:5000/trip_requests/14891
 
