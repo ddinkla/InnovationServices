@@ -36,8 +36,8 @@ class DriverRecord(Resource):
 
     def put(self, driver_id):
         parser = reqparse.RequestParser()
-        parser.add_argument("status", type=str, help="Status not valid, change driver status",
-                            choices=['available', 'driving', 'offline'])
+        parser.add_argument("CarType", type=str, help="CarType not valid, change driver CarType",
+                            choices=['premium', 'basic'])
         args = parser.parse_args(strict=True)
 
         # possible_status = ['available', 'driving', 'offline']
@@ -47,7 +47,7 @@ class DriverRecord(Resource):
 
         for driver in drivers:
             if driver_id == driver["driver_id"]:
-                driver["status"] = args["status"]
+                driver["CarType"] = args["CarType"]
                 return driver, 200
 
         return {"message": "Trip not found"}, 404
@@ -79,12 +79,4 @@ class DriverRecords(Resource):
         return driver_to_be_created, 201  # 201 Created HTTP status code
 
     def get(self):
-        status = request.args.get("status")
-        if status is not None:
-            drivers_with_status = []
-            for driver in drivers:
-                if status == driver['status']:
-                    drivers_with_status.append(driver)
-            return drivers_with_status, 200
-
         return drivers, 200
