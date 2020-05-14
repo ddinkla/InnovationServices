@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
-from driver_location.resources.driver_location import DriverLocation, DriverLocations
+from resources.driver_location import DriverLocation, DriverLocations
 
 app = Flask(__name__)
 api = Api(app)
