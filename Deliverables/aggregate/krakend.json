@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "output_encoding": "json",
+  "name": "DriverConcatenation",
+  "port": 8081,
+  "endpoints":[
+    {
+      "endpoint": "/driver_aggregate/{driver_id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/driver_details/{driver_id}",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://172.17.0.2:5000/"
+          ],
+          "disable_host_sanitize": false
+        },
+        {
+          "url_pattern": "/driver_locations/{driver_id}/",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://172.17.0.3:5000/"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
+    }
+  ]
+}

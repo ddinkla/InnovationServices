@@ -6,25 +6,21 @@ drivers = [
     {
         "driver_id": "d12542",
         "name": "Fernando Alonso",
-        "status": "offline",
         "CarType": "basic"
     },
     {
         "driver_id": "d85719",
         "name": "Daniel Ricciardo",
-        "status": "available",
         "CarType": "basic"
     },
     {
         "driver_id": "d54818",
         "name": "Lewis Hamilton",
-        "status": "driving",
         "CarType": "premium"
     },
     {
         "driver_id": "d762057",
         "name": "Max Verstappen",
-        "status": "available",
         "CarType": "premium"
     }
 ]
@@ -83,4 +79,12 @@ class DriverRecords(Resource):
         return driver_to_be_created, 201  # 201 Created HTTP status code
 
     def get(self):
-            return drivers, 200
+        status = request.args.get("status")
+        if status is not None:
+            drivers_with_status = []
+            for driver in drivers:
+                if status == driver['status']:
+                    drivers_with_status.append(driver)
+            return drivers_with_status, 200
+
+        return drivers, 200
