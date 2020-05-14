@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+  available_driver:
+    build: ./available_driver/
+    ports: 
+      - "5000:5000"
+  driver_details:
+    build: ./driver_details/
+    ports: 
+      - "5001:5000"
+  driver_location:
+    build: ./driver_location
+    ports:
+      - "5002:5000"
+  driver_rating:
+    build: ./driver_rating
+    ports:
+      - "5003:5000"
+  trip_request:
+    build: ./trip_request
+    ports:
+      - "5004:5000"
