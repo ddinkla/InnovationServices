@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
-from driver_rating.resources.driver_rating import RateDriver, DriverRatings
+from resources.driver_rating import RateDriver, DriverRatings
 
 app = Flask(__name__)
 api = Api(app)

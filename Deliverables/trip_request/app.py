@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
-from trip_request.resources.trip_request import TripRequest, TripRequests
+from resources.trip_request import TripRequest, TripRequests
 
 app = Flask(__name__)
 api = Api(app)

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
-from available_driver.resources.available_driver import AvailableDrivers
+from resources.available_driver import AvailableDrivers
 
 app = Flask(__name__)
 api = Api(app)
