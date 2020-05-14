@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="myProcess" name="My process" isExecutable="true">
+    <startEvent id="tripRequest" name="Trip Request" activiti:initiator="admin">
+      <extensionElements>
+        <activiti:formProperty id="customerID" name="Customer ID" type="string" variable="customerID" required="true"></activiti:formProperty>
+        <activiti:formProperty id="tripID" name="Trip ID" type="long" variable="tripID" required="true"></activiti:formProperty>
+        <activiti:formProperty id="destination" name="Destination" type="string" variable="destination"></activiti:formProperty>
+        <activiti:formProperty id="location" name="Location" type="string" variable="location" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <serviceTask id="getSuitableDrivers" name="Get Suitable Drivers" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask" activiti:extensionId="org.wso2.developerstudio.bpmn.extensions.restTask.RESTTask">
+      <extensionElements>
+        <activiti:field name="serviceURL">
+          <activiti:string>http://34.71.15.38:5000/available_driver/</activiti:string>
+        </activiti:field>
+        <activiti:field name="method">
+          <activiti:string>GET</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputMappings">
+          <activiti:string>driver_id:$.[0].driver_id</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputVariable">
+          <activiti:string>driver_id</activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <userTask id="acceptPassenger" name="Accept Passenger" activiti:candidateGroups="admin">
+      <extensionElements>
+        <activiti:formProperty id="passengerAccepted" name="Passenger Accepted" type="boolean" variable="passengerAccepted" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="flow10"></exclusiveGateway>
+    <sequenceFlow id="flow9" sourceRef="acceptPassenger" targetRef="exclusivegateway1"></sequenceFlow>
+    <scriptTask id="logCancellation" name="Log Cancellation" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>java.lang.System.out.println("The driver did not accept your trip request, please try again.");</script>
+    </scriptTask>
+    <sequenceFlow id="flow10" sourceRef="exclusivegateway1" targetRef="logCancellation"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow11" sourceRef="logCancellation" targetRef="endevent1"></sequenceFlow>
+    <scriptTask id="logSuitableDrivers" name="Log Suitable Drivers" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>var driver_ID = execution.getVariable("driver_id");
+java.lang.System.out.println("The driver with ID " + driver_ID + " is available. ");</script>
+    </scriptTask>
+    <userTask id="rateDriver" name="Rate Driver" activiti:candidateGroups="admin">
+      <extensionElements>
+        <activiti:formProperty id="driverRating" name="Driver Rating" type="double" variable="driverRating" required="true"></activiti:formProperty>
+        <activiti:formProperty id="nameDriver" name="Name Driver" type="string" variable="nameDriver"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <serviceTask id="processRating" name="Process Rating" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask" activiti:extensionId="org.wso2.developerstudio.bpmn.extensions.restTask.RESTTask">
+      <extensionElements>
+        <activiti:field name="serviceURL">
+          <activiti:expression>http://34.71.15.38:5003/driver_rating/${nameDriver}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="method">
+          <activiti:string>GET</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputMappings">
+          <activiti:string>newDriverRating:$.rating</activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow16" sourceRef="rateDriver" targetRef="processRating"></sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <serviceTask id="updateDriverDetails" name="Update Driver Details" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask" activiti:extensionId="org.wso2.developerstudio.bpmn.extensions.restTask.RESTTask">
+      <extensionElements>
+        <activiti:field name="serviceURL">
+          <activiti:string>http://34.71.15.38:5001/driver_details/</activiti:string>
+        </activiti:field>
+        <activiti:field name="method">
+          <activiti:string>PUT</activiti:string>
+        </activiti:field>
+        <activiti:field name="input">
+          <activiti:expression>{
+	"driver_id":"${driver_id}",
+	"rating": ${newDriverRating}
+}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="outputVariable">
+          <activiti:string>updateRes</activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow17" sourceRef="processRating" targetRef="updateDriverDetails"></sequenceFlow>
+    <sequenceFlow id="flow18" sourceRef="updateDriverDetails" targetRef="scripttask1"></sequenceFlow>
+    <serviceTask id="getListAllDrivers" name="Get All Driver Locations" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask" activiti:extensionId="org.wso2.developerstudio.bpmn.extensions.restTask.RESTTask">
+      <extensionElements>
+        <activiti:field name="serviceURL">
+          <activiti:string>http://34.71.15.38:5002/driver_locations/</activiti:string>
+        </activiti:field>
+        <activiti:field name="method">
+          <activiti:string>GET</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputMappings">
+          <activiti:string>allDrivers:$.</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputVariable">
+          <activiti:string>allDrivers</activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="submitTripRequest" name="Submit Trip Request" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask" activiti:extensionId="org.wso2.developerstudio.bpmn.extensions.restTask.RESTTask">
+      <extensionElements>
+        <activiti:field name="serviceURL">
+          <activiti:string>http://34.71.15.38:5004/trip_requests/</activiti:string>
+        </activiti:field>
+        <activiti:field name="method">
+          <activiti:string>POST</activiti:string>
+        </activiti:field>
+        <activiti:field name="input">
+          <activiti:expression>{
+	"trip_id":"${tripID}",
+	"customer_id":"${customerID}",
+	"destination":"${destination}",
+	"location":"${location}"
+}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="outputMappings">
+          <activiti:string>updateDriverRes:$.</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputVariable">
+          <activiti:string>updateDriverRes</activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow23" sourceRef="tripRequest" targetRef="parallelgateway1"></sequenceFlow>
+    <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow24" sourceRef="parallelgateway2" targetRef="logSuitableDrivers"></sequenceFlow>
+    <sequenceFlow id="flow25" sourceRef="parallelgateway1" targetRef="getListAllDrivers"></sequenceFlow>
+    <sequenceFlow id="flow26" sourceRef="parallelgateway1" targetRef="submitTripRequest"></sequenceFlow>
+    <sequenceFlow id="flow27" sourceRef="getSuitableDrivers" targetRef="parallelgateway2"></sequenceFlow>
+    <sequenceFlow id="flow28" sourceRef="submitTripRequest" targetRef="parallelgateway2"></sequenceFlow>
+    <serviceTask id="getAvailableDriver" name="Update Available Drivers" activiti:class="org.wso2.carbon.bpmn.extensions.rest.RESTTask" activiti:extensionId="org.wso2.developerstudio.bpmn.extensions.restTask.RESTTask">
+      <extensionElements>
+        <activiti:field name="serviceURL">
+          <activiti:string>http://34.71.15.38:5000/available_driver/</activiti:string>
+        </activiti:field>
+        <activiti:field name="method">
+          <activiti:string>POST</activiti:string>
+        </activiti:field>
+        <activiti:field name="input">
+          <activiti:expression>${allDrivers}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="headers">
+          <activiti:string>{"Content-Type":"application/json"}</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputVariable">
+          <activiti:string>updateDriversRes</activiti:string>
+        </activiti:field>
+        <activiti:field name="outputMappings">
+          <activiti:string>updateDriversRes:$.</activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow30" sourceRef="getAvailableDriver" targetRef="getSuitableDrivers"></sequenceFlow>
+    <sequenceFlow id="flow31" sourceRef="exclusivegateway1" targetRef="rateDriver">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passengerAccepted}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow32" sourceRef="logSuitableDrivers" targetRef="acceptPassenger"></sequenceFlow>
+    <sequenceFlow id="flow33" sourceRef="getListAllDrivers" targetRef="getAvailableDriver"></sequenceFlow>
+    <scriptTask id="scripttask1" name="Process Done" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>java.lang.System.out.println("Process Done.");</script>
+    </scriptTask>
+    <sequenceFlow id="flow34" sourceRef="scripttask1" targetRef="endevent2"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+    <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+      <bpmndi:BPMNShape bpmnElement="tripRequest" id="BPMNShape_tripRequest">
+        <omgdc:Bounds height="35.0" width="35.0" x="160.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getSuitableDrivers" id="BPMNShape_getSuitableDrivers">
+        <omgdc:Bounds height="63.0" width="105.0" x="508.0" y="122.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="acceptPassenger" id="BPMNShape_acceptPassenger">
+        <omgdc:Bounds height="71.0" width="105.0" x="750.0" y="217.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="890.0" y="237.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="logCancellation" id="BPMNShape_logCancellation">
+        <omgdc:Bounds height="55.0" width="105.0" x="858.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="893.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="logSuitableDrivers" id="BPMNShape_logSuitableDrivers">
+        <omgdc:Bounds height="71.0" width="105.0" x="612.0" y="222.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rateDriver" id="BPMNShape_rateDriver">
+        <omgdc:Bounds height="55.0" width="105.0" x="960.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="processRating" id="BPMNShape_processRating">
+        <omgdc:Bounds height="55.0" width="105.0" x="1110.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="1410.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="updateDriverDetails" id="BPMNShape_updateDriverDetails">
+        <omgdc:Bounds height="81.0" width="105.0" x="1251.0" y="217.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getListAllDrivers" id="BPMNShape_getListAllDrivers">
+        <omgdc:Bounds height="71.0" width="105.0" x="188.0" y="122.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="submitTripRequest" id="BPMNShape_submitTripRequest">
+        <omgdc:Bounds height="67.0" width="105.0" x="330.0" y="277.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="220.0" y="237.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="540.0" y="237.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getAvailableDriver" id="BPMNShape_getAvailableDriver">
+        <omgdc:Bounds height="75.0" width="105.0" x="330.0" y="84.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="1375.0" y="225.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="855.0" y="252.0"></omgdi:waypoint>
+        <omgdi:waypoint x="890.0" y="257.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="910.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="910.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="910.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="910.0" y="85.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="1065.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1110.0" y="257.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="1215.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1251.0" y="257.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="1356.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1375.0" y="252.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+        <omgdi:waypoint x="195.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="257.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="580.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="612.0" y="257.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="240.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="194.0"></omgdi:waypoint>
+        <omgdi:waypoint x="293.0" y="157.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="240.0" y="277.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="311.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="310.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="560.0" y="185.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="191.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+        <omgdi:waypoint x="435.0" y="310.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="311.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="277.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+        <omgdi:waypoint x="435.0" y="121.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="153.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+        <omgdi:waypoint x="930.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="960.0" y="257.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="717.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="750.0" y="252.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
+        <omgdi:waypoint x="293.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="121.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow34" id="BPMNEdge_flow34">
+        <omgdi:waypoint x="1427.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1427.0" y="155.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
