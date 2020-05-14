@@ -10,6 +10,14 @@ driver_locations = [
     {
         "driver_id": "d762057",
         "last_location": [51.71853, 5.2960],
+    },
+    {
+        "driver_id": "d12542",
+        "last_location": [52.567145, 4.86514]
+    },
+    {
+        "driver_id": "d54818",
+        "last_location": [53.07613, 6.855135]
     }
 ]
 
